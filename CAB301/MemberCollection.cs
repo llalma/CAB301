@@ -9,41 +9,87 @@ namespace CAB301
         Member[] members = new Member[100];
         int first_unused_index = 0;
 
+        private int find_first_unused_index()
+        {
+            //Returns first unused index in members array, -1 if no avaliable positions
+            for (int i = 0; i < members.Length; i++)
+            {
+                if (members[i] == null)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
         public void Add(Member member)
         {
-            //Add element to array, no warning if index is over 100 though as said in slack that 10 is enough, so 100 should be fine.
+            //Add element to array, no warning if index is over 100 though as said in slack that 10 is enough, so 100 should be fine. 
+            //Makes all letetrs and first and last name caps to make searching easier.
 
             //Approaches
             //with for loop find first element which is not null O(n) time
-            //in first postion of array save first open position, makes adding faster when adding at end of the list, makes removing same,
+            //in first postion of array save first open position, makes adding faster when adding at end of the list, makes removing same.
+            //Skip lists?
+            //ordered list?
+
+            if(members[first_unused_index] != null)
+            {
+                first_unused_index = find_first_unused_index();
+            }
+
+            //Ensure names are all caps as they are compared msot often.
+            member.First_name = member.First_name.ToUpper();
+            member.Last_name = member.Last_name.ToUpper();
 
             members[first_unused_index] = member;
+
+            //Guess that next position is avaliable, if not can use function from above.
+            //This reduces runtime occassionaly.
             first_unused_index++;            
         }
 
-        public void Remove(string first_name, string last_name)
+        public Boolean Remove(string first_name, string last_name)
         {
-            //Remove member from list given full name.
+            //Remove member from list given full name. Returns true if member removed otherwise false.
             for(int i = 0; i < members.Length; i++)
             {
+                //Save into variable to reduce processing time, assuming using linked lists when getting to variable
                 Member member = members[i];
-                if(String.Compare(member.First_name + " " + member.Last_name, (first_name + " " + last_name)) == 0)
+                if(String.Compare(member.First_name + member.Last_name, (first_name.ToUpper() + last_name.ToUpper())) == 0 && member != null)
                 {
                     //Matching Name
+                    members[i] = null;
+                    first_unused_index = i;
 
+                    return true;
                 }
             }
-        }
 
-        public Member Search()
-        {
-            Address address = new Address(9, 38, "Elma st", 4107, "Salisbury");
-            return new Member("Liam", "Hulsman-Benson", address, 0414984327);
-        }
-
-        private Boolean check_member_exists()
-        {
             return false;
+        }
+
+        public Member Search(string first_name, string last_name)
+        {
+            //Returns the member given a first and last name. returns null if not in array.
+            //Remove member from list given full name.
+            for (int i = 0; i < members.Length; i++)
+            {
+                //Save into variable to reduce processing time, assuming using linked lists when getting to variable
+                Member member = members[i];
+                if (member != null && String.Compare(member.First_name + member.Last_name, (first_name.ToUpper() + last_name.ToUpper())) == 0)
+                {
+                    return member;
+                }
+            }
+
+            return null;
+        }
+
+        private Boolean check_member_exists(string first_name, string last_name)
+        {
+            //Returns true if a member does exist with the first and last name, returns false if a member does not exist.
+            return Search(first_name, last_name) != null;
         }
     }
 }

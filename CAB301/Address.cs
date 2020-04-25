@@ -26,5 +26,14 @@ namespace CAB301
         public string Street_name { get => street_name; set => street_name = value; }
         public int Postcode { get => postcode; set => postcode = value; }
         public string Suburb { get => suburb; set => suburb = value; }
+
+        public override string ToString()
+        {
+            if(apartment_number <= 0)
+            {
+                return street_number + " " + street_name + ", " + postcode + ", " + suburb;
+            }
+            return "U " + apartment_number + ", " + street_number + " " + street_name + ", " + postcode + ", " + suburb;
+        }
     }
 }

@@ -4,15 +4,15 @@ namespace Enums
 {
     public enum Genere
     {
-        Drama,
-        Adventure,
-        Family,
-        Action,
-        Sci_Fi,
-        Comedy,
-        Animated,
-        Thriller,
-        Other
+        DRAMAN,
+        ADVENTURE,
+        FAMILY,
+        ACTION,
+        SCI_FI,
+        COMEDY,
+        ANIMATED,
+        THRILLER,
+        OTHER
     }
 
     public enum Classification
