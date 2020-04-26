@@ -53,7 +53,16 @@ namespace CAB301
                     show_copies();
                 }else if(screen == Screens.Add_member)
                 {
-                    Resgister_member();
+                    Register_member();
+                }else if(screen == Screens.Get_number)
+                {
+                    Get_number();
+                }else if(screen == Screens.Member_login)
+                {
+                    Member_login();
+                }else if(screen == Screens.Member_menu)
+                {
+                    Member_menu();
                 }
                 //Clear console
                 Console.Clear();
@@ -97,6 +106,9 @@ namespace CAB301
             }
         }
 
+        /// <summary>
+        /// Staff functions below
+        /// </summary>
         private void Staff_login()
         {
             //Allows for blank passwords but not blank usernames. casesensative for username and password
@@ -373,7 +385,7 @@ namespace CAB301
             return password.Length == 4;
         }
 
-        private void Resgister_member()
+        private void Register_member()
         {
             Console.WriteLine("===========Register Member==========");
             Console.WriteLine("First name: ");
@@ -459,6 +471,20 @@ namespace CAB301
             }
         }
 
+        private void Get_number()
+        {
+            Console.WriteLine("===========Get Members Number==========");
+            Console.WriteLine("First name: ");
+            string first_name = Console.ReadLine();
+
+            Console.WriteLine("Last name: ");
+            string last_name = Console.ReadLine();
+
+            //Output message and return to staff menu screen
+            error = first_name + " " + last_name + "Phone number is: " + members.Get_members_number(first_name, last_name);
+            screen = Screens.Staff_menu;
+        }
+
         private void Staff_menu()
         {
             Console.WriteLine("===========Staff Menu==========");
@@ -494,8 +520,56 @@ namespace CAB301
             {
                 screen = Screens.Add_member;
             }
+            else if (key == ConsoleKey.D4 || key == ConsoleKey.NumPad4)
+            {
+                screen = Screens.Get_number;
+            }
+            else if (key == ConsoleKey.D0 || key == ConsoleKey.NumPad0)
+            {
+                screen = Screens.Main_menu;
+            }
+            else
+            {
+                //Not needed but to simplify reading the code.
+                error = "Wrong input";
+                screen = Screens.Staff_menu;
+            }
         }
 
+        /// <summary>
+        /// Member functions below
+        /// </summary>
+
+        private void Member_login()
+
+        {
+            //Allows for blank passwords but not blank usernames. casesensative for username and password
+
+            Console.WriteLine("===========Member Login==========");
+            string username = "";
+
+            //Loop until a user name which is not blank is inputted
+            while (username == "")
+            {
+                Console.WriteLine("Username (LastNameFirstName): ");
+                username = Console.ReadLine();
+            }
+
+            Console.WriteLine("Password: ");
+            string password = Console.ReadLine();
+
+            if (members.Check_login_info(username,password))
+            {
+                //Successful login, next screen is staff menu.
+                screen = Screens.Member_menu;
+            }
+            else
+            {
+                //Incorrect login, next screen is main menu.
+                screen = Screens.Main_menu;
+                error = "Incorrect login information\n";
+            }
+        }
         private void Member_menu()
         {
             Console.WriteLine("===========Member Menu===========");
@@ -511,6 +585,17 @@ namespace CAB301
             ConsoleKey key = Console.ReadKey().Key;
             //Add a line between user input and next print statement
             Console.WriteLine("");
+
+            if (key == ConsoleKey.D0 || key == ConsoleKey.NumPad0)
+            {
+                //Next screen is Add movies to library
+                screen = Screens.Main_menu;
+            }
+            else if (key == ConsoleKey.D1 || key == ConsoleKey.NumPad1)
+            {
+                //Next screen is Add movies to library
+                screen = Screens.Display_movies;
+            }
         }
 
 

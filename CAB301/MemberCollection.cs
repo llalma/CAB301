@@ -86,10 +86,47 @@ namespace CAB301
             return null;
         }
 
+        public Member Search(string username)
+        {
+            //Returns the member given a username. returns null if not in array.
+            //Remove member from list given full name.
+            for (int i = 0; i < members.Length; i++)
+            {
+                //Save into variable to reduce processing time, assuming using linked lists when getting to variable
+                Member member = members[i];
+                if (member != null && String.Compare(member.Username, username) == 0)
+                {
+                    return member;
+                }
+            }
+
+            return null;
+        }
+
         public Boolean Exists(string first_name, string last_name)
         {
             //Returns true if a member does exist with the first and last name, returns false if a member does not exist.
             return Search(first_name, last_name) != null;
+        }
+
+        public Int64 Get_members_number(string first_name, string last_name)
+        {
+            return Search(first_name, last_name).Phone_number;
+        }
+
+        public Boolean Check_login_info(string username,string password)
+        {
+            //Returns true when username and password match input values.
+
+            Member member = Search(username);
+
+            if(member != null)
+            {
+                //Username exists in MembersCollection
+                return (String.Compare(member.Username, username) == 0 && String.Compare(member.Password, password) == 0);
+            }
+            return false;
+           
         }
     }
 }
