@@ -4,12 +4,14 @@ using System.Text;
 using Enums;
 
 //assuming when deleting movie from movie colection it deletes all copies of the movie.
+//assuming when renting number of copies is reduced in moviecollection
 
 // 0 = main menu
 // 1 = staff login
 // 2 = staff menu
 // 3 = add new movie for staff
 // 4 = remove movie for staff
+// 5 = Show number of copies for staff
 
 namespace CAB301
 {
@@ -18,7 +20,7 @@ namespace CAB301
         MovieCollection movies = new MovieCollection();
         Node root = null;
         Boolean exit = false;
-        int screen = 0;
+        Screens screen = Screens.Main_menu;
         string error = "";
 
         public GUI()
@@ -29,22 +31,25 @@ namespace CAB301
                 Console.WriteLine(error);
                 error = "";
 
-                if (screen == 0)
+                if (screen == Screens.Main_menu)
                 {
                     Main_menu();
-                }else if (screen == 1)
+                }else if (screen == Screens.Staff_login)
                 {
                     Staff_login();
                 }
-                else if (screen == 2)
+                else if (screen == Screens.Staff_menu)
                 {
                     Staff_menu();
-                }else if(screen == 3)
+                }else if(screen == Screens.Add_movie)
                 {
                     Add_new_movie();
-                }else if(screen == 4)
+                }else if(screen == Screens.Remove_movie)
                 {
                     Remove_movie();
+                }else if(screen == Screens.Show_copies)
+                {
+                    show_copies();
                 }
                 //Clear console
                 Console.Clear();
@@ -73,17 +78,17 @@ namespace CAB301
             else if (key == ConsoleKey.D1 || key == ConsoleKey.NumPad1)
             {
                 //Next screen is staff login
-                screen = 1;
+                screen = Screens.Staff_login;
             }
             else if (key == ConsoleKey.D2 || key == ConsoleKey.NumPad2)
             {
                 //Next screen is member login
-                screen = 2;
+                screen = Screens.Member_login;
             }
             else
             {
                 //Invalid key
-                screen = 0;
+                screen = Screens.Main_menu;
                 Console.Out.WriteLine("Invalid Key please try again");
             }
         }
@@ -108,12 +113,12 @@ namespace CAB301
             if(String.Compare(username,"staff") == 0 && String.Compare(password, "today123") == 0)
             {
                 //Successful login, next screen is staff menu.
-                screen = 2;
+                screen = Screens.Staff_menu;
             }
             else
             {
                 //Incorrect login, next screen is main menu.
-                screen = 0;
+                screen = Screens.Main_menu;
                 error = "Incorrect login information\n";
             }
         }
@@ -162,7 +167,7 @@ namespace CAB301
 
         private int Select_int_from_input()
         {
-            //Cannot use release date of -1. all other int values are fines
+            //Read intger from user input.
             if (Int32.TryParse(Console.ReadLine(), out int selection))
             {
                 return selection;
@@ -170,7 +175,7 @@ namespace CAB301
             else
             {
                 Console.WriteLine("Input error");
-                return -1;
+                return 0;
             }
         }
 
@@ -180,62 +185,135 @@ namespace CAB301
             Console.WriteLine("Title: ");
             string title = Console.ReadLine();
 
-            Console.WriteLine("Starring: ");
-            string starring = Console.ReadLine();
-
-            Console.WriteLine("Director: ");
-            string director = Console.ReadLine();
-
-           
-            int duration = -1;
-            while (duration == -1)
+            if (movies.Exists(root,title))
             {
-                Console.WriteLine("Duration: ");
-                duration = Select_int_from_input();
-            }
+                //Movie already existed in tree, so change number of copies by input value. can be -ve, if number of copies goes to <= 0 movie is deleted from tree.
 
-            //Loop until a valid Genere is selected  
-            int selection = -1;
-            while (selection < 0 || selection > 8) 
-            {
-                Console.WriteLine("Genere: ");
-                selection = Select_Genere();
-            }
-            Genere genere = (Genere)selection;
+                //Loop until a valid number of copies is selected
+                int num_copies = 0;
+                while (num_copies == 0)
+                {
+                    Console.WriteLine("Enter the number of copies you would like to adjust the number of copies by: ");
+                    num_copies = Select_int_from_input();
 
-            //Loop until a valid Classification is selected
-            selection = -1;
-            while(selection < 0 || selection > 3)
-            {
-                Console.WriteLine("Classification: ");
-                selection = Select_Classification();
-            }
-            Classification classification = (Classification)selection;
+                    //Error message
+                    if (num_copies == 0)
+                    {
+                        Console.Out.WriteLine("Input must not be 0, can be negative");
+                    }
+                    else
+                    {
+                        int output = movies.Change_num_copies(root, title, num_copies);
+                        if (output == 0)
+                        {
+                            error = title + " Removed from tree";
+                        }
+                        else
+                        {
+                            if(num_copies < 0)
+                            {
+                                error = -1 * num_copies + " copies of " + title + " removed.";
+                            }
+                            else
+                            {
+                                error = num_copies + " copies of " + title + " added.";
 
-            //Loop until a valid Year is selected
-            int release_date = -1;
-            while (release_date == -1)
-            {
-                Console.WriteLine("Release Date(Year): ");
-                release_date = Select_int_from_input();
-            }
+                            }
+                        }
+                       
+                    }
+                }
 
-            //Add Movie to MovieCollection
-            Movie movie = new Movie(title, starring, director, duration, release_date, genere, classification);
-            root = movies.Insert_node(root,movie);
-
-            //Message if addition of movie worked or not
-            if(movies.Moive_exists(root,title))
-            {
-                error = title + " successfully added to MovieCollection";
+                
             }
             else
             {
-                error = "Adding " + title +" failed";
+                //Movie does not exit in tree, so add to tree
+                Console.WriteLine("Starring: ");
+                string starring = Console.ReadLine();
+
+                Console.WriteLine("Director: ");
+                string director = Console.ReadLine();
+
+
+                int duration = 0;
+                while (duration <= 0)
+                {
+                    Console.WriteLine("Duration: ");
+                    duration = Select_int_from_input();
+
+                    //Error message
+                    if (duration <= 0)
+                    {
+                        Console.Out.WriteLine("Input must be greater than 0");
+                    }
+                }
+
+                //Loop until a valid Genere is selected  
+                int selection = -1;
+                while (selection < 0 || selection > 8)
+                {
+                    Console.WriteLine("Genere: ");
+                    selection = Select_Genere();
+                }
+                Genere genere = (Genere)selection;
+
+                //Loop until a valid Classification is selected
+                selection = -1;
+                while (selection < 0 || selection > 3)
+                {
+                    Console.WriteLine("Classification: ");
+                    selection = Select_Classification();
+                }
+                Classification classification = (Classification)selection;
+
+                //Loop until a valid Year is selected
+                int release_date = 0;
+                while (release_date <= 0)
+                {
+                    Console.WriteLine("Release Date(Year): ");
+                    release_date = Select_int_from_input();
+
+                    //Error message
+                    if (release_date <= 0)
+                    {
+                        Console.Out.WriteLine("Input must be greater than 0");
+                    }
+                }
+
+                //Loop until a valid number of copies is selected
+                int num_copies = -1;
+                while (num_copies < 1)
+                {
+                    Console.WriteLine("Number of copies: ");
+                    num_copies = Select_int_from_input();
+
+                    //Error message
+                    if (num_copies <= 0)
+                    {
+                        Console.Out.WriteLine("Input must be greater than or equal to 1");
+                    }
+                }
+
+                //Add Movie to MovieCollection
+                Movie movie = new Movie(title, starring, director, duration, release_date, genere, classification, num_copies);
+                root = movies.Insert_node(root, movie);
+
+                //Message if addition of movie worked or not
+                if (movies.Exists(root, title))
+                {
+                    error = title + " successfully added to MovieCollection";
+                }
+                else
+                {
+                    error = "Adding " + title + " failed";
+                }
             }
-            screen = 2;
+
+            
+            screen = Screens.Staff_menu;
         }
-        
+
         private void Remove_movie()
         {
             //Will say successfully removed movie even if movie wasnt originally in list.
@@ -247,7 +325,7 @@ namespace CAB301
             root = movies.Delete_node(root, title);
 
             //Message if removing movie worked or not
-            if (!movies.Moive_exists(root, title))
+            if (!movies.Exists(root, title))
             {
                 error = title + " successfully removed from MovieCollection";
             }
@@ -255,7 +333,25 @@ namespace CAB301
             {
                 error = "Removing " + title + " failed";
             }
-            screen = 2;
+            screen = Screens.Staff_menu;
+        }
+
+        private void show_copies()
+        {
+            Console.WriteLine("===========Show remianing copies==========");
+            Console.WriteLine("Title: ");
+            string title = Console.ReadLine();
+
+            if (movies.Exists(root, title))
+            {
+                error = movies.Search(root, title).Copies + " of " + title + " are in the library.";
+            }
+            else
+            {
+                error = "Movie does not exist";
+            }
+            
+            screen = Screens.Staff_menu;
         }
 
         private void Resgister_member()
@@ -263,6 +359,7 @@ namespace CAB301
             Console.WriteLine("===========Register Member==========");
             Console.WriteLine("Title: ");
         }
+
         private void Staff_menu()
         {
             Console.WriteLine("===========Staff Menu==========");
@@ -270,6 +367,7 @@ namespace CAB301
             Console.WriteLine("2. Remove a movie DVD");
             Console.WriteLine("3. Register a new Member");
             Console.WriteLine("4. Find a registerd member's phone number");
+            Console.WriteLine("5. Show number of copies remaining");
             Console.WriteLine("0. Return to main menu");
             Console.WriteLine("=================================");
             Console.WriteLine("Please make a selection (1-4 or 0 to return to main menu): ");
@@ -281,12 +379,17 @@ namespace CAB301
             if (key == ConsoleKey.D1 || key == ConsoleKey.NumPad1)
             {
                 //Next screen is Add movies to library
-                screen = 3;
+                screen = Screens.Add_movie;
             }
-            if (key == ConsoleKey.D2 || key == ConsoleKey.NumPad2)
+            else if (key == ConsoleKey.D2 || key == ConsoleKey.NumPad2)
             {
-                //Next screen is remove dvd from library
-                screen = 4;
+                //Next screen is remove movie from library
+                screen = Screens.Remove_movie;
+            }
+            else if (key == ConsoleKey.D5 || key == ConsoleKey.NumPad5)
+            {
+                //Next screen is show number of copies in library
+                screen = Screens.Show_copies;
             }
         }
 

@@ -185,7 +185,7 @@ namespace CAB301
             return output;
         }
 
-        public Boolean Moive_exists(Node root, string title)
+        public Boolean Exists(Node root, string title)
         {
             //Returns true if movie is in tree.
             if(Search(root, title) != null)
@@ -193,6 +193,24 @@ namespace CAB301
                 return true;
             }
             return false;
+        }
+
+        public int Change_num_copies(Node root,string title,int copies)
+        {
+            //Increase the numebr of copies by the input copies. can be negative to decrease the number of copies.
+            //Returns new number of copies for movies.
+
+            Movie movie = Search(root, title);
+            movie.Copies += copies;
+
+
+            if (movie.Copies <= 0)
+            {
+                //If the number of copies is 0 or goes below it remove movie from tree
+                Delete_node(root, title);
+                return 0;
+            }
+            return Search(root, title).Copies;
         }
     }
 }

@@ -22,4 +22,15 @@ namespace Enums
         M15,
         MA15
     }
+
+    public enum Screens
+    {
+        Main_menu,
+        Staff_login,
+        Staff_menu,
+        Add_movie,
+        Remove_movie,
+        Show_copies,
+        Member_login
+    }
 }
