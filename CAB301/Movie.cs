@@ -11,28 +11,20 @@ namespace CAB301
         private string starring;
         private string director;
         private int duration;
+        private int release_date;
         private Genere genere;
         private Classification classifcation;
 
 
-        public Movie(string title, string starring, string director, int duration, Genere genere, Classification classifcation)
+        public Movie(string title, string starring, string director, int duration, int release_date, Genere genere, Classification classifcation)
         {
             this.Title = title;
             this.Starring = starring;
             this.Director = director;
             this.Duration = duration;
+            this.Release_date = release_date;
             this.Genere = genere;
             this.Classifcation = classifcation;
-        }
-
-        public int get_sum_of_title()
-        {
-            int sum = 0;
-            for(int i = 0; i < title.Length; i++) 
-            {
-                sum += (int)title[i];
-            }
-            return sum;
         }
 
         public string Title { get => title; set => title = value; }
@@ -41,5 +33,6 @@ namespace CAB301
         public int Duration { get => duration; set => duration = value; }
         public Genere Genere { get => genere; set => genere = value; }
         public Classification Classifcation { get => classifcation; set => classifcation = value; }
+        public int Release_date { get => release_date; set => release_date = value; }
     }
 }

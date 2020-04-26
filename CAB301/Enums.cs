@@ -4,7 +4,7 @@ namespace Enums
 {
     public enum Genere
     {
-        DRAMAN,
+        DRAMA,
         ADVENTURE,
         FAMILY,
         ACTION,

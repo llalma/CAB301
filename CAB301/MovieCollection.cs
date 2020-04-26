@@ -184,5 +184,15 @@ namespace CAB301
 
             return output;
         }
+
+        public Boolean Moive_exists(Node root, string title)
+        {
+            //Returns true if movie is in tree.
+            if(Search(root, title) != null)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

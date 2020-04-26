@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Enums;
 
+//assuming when deleting movie from movie colection it deletes all copies of the movie.
+
 // 0 = main menu
 // 1 = staff login
 // 2 = staff menu
@@ -17,18 +19,24 @@ namespace CAB301
         Node root = null;
         Boolean exit = false;
         int screen = 0;
+        string error = "";
 
         public GUI()
-        {
+        {   
             while (exit == false)
             {
+                //Print error message as console is cleared after each loop. after printing clear error message.
+                Console.WriteLine(error);
+                error = "";
+
                 if (screen == 0)
                 {
                     Main_menu();
                 }else if (screen == 1)
                 {
                     Staff_login();
-                }else if (screen == 2)
+                }
+                else if (screen == 2)
                 {
                     Staff_menu();
                 }else if(screen == 3)
@@ -82,9 +90,17 @@ namespace CAB301
 
         private void Staff_login()
         {
+            //Allows for blank passwords but not blank usernames. casesensative for username and password
+
             Console.WriteLine("===========Staff Login==========");
-            Console.WriteLine("Username: ");
-            string username = Console.ReadLine();
+            string username = "";
+
+            //Loop until a user name which is not blank is inputted
+            while(username == "")
+            {
+                Console.WriteLine("Username: ");
+                username = Console.ReadLine();
+            }
 
             Console.WriteLine("Password: ");
             string password = Console.ReadLine();
@@ -97,8 +113,64 @@ namespace CAB301
             else
             {
                 //Incorrect login, next screen is main menu.
-                Console.WriteLine("Incorrect Login");
                 screen = 0;
+                error = "Incorrect login information\n";
+            }
+        }
+
+        private int Select_Genere()
+        {
+            int num_of_enums = Enum.GetNames(typeof(Genere)).Length;
+            for (int i = 0; i < num_of_enums; i++)
+            {
+                Console.WriteLine(i+1 + ". " + (Genere)i);
+            }
+
+            Console.Out.WriteLine("Make Selection (1-" + num_of_enums + "): ");
+
+            if(Int32.TryParse(Console.ReadLine(), out int selection))
+            {
+                return selection-1;
+            }
+            else
+            {
+                Console.WriteLine("Input error");
+                return -1;
+            }
+        }
+
+        private int Select_Classification()
+        {
+            int num_of_enums = Enum.GetNames(typeof(Classification)).Length;
+            for (int i = 0; i < num_of_enums; i++)
+            {
+                Console.WriteLine(i+1 + ". " + (Classification)i);
+            }
+
+            Console.Out.WriteLine("Make Selection (1-" + num_of_enums + "): ");
+
+            if (Int32.TryParse(Console.ReadLine(), out int selection))
+            {
+                return selection-1;
+            }
+            else
+            {
+                Console.WriteLine("Input error");
+                return -1;
+            }
+        }
+
+        private int Select_int_from_input()
+        {
+            //Cannot use release date of -1. all other int values are fines
+            if (Int32.TryParse(Console.ReadLine(), out int selection))
+            {
+                return selection;
+            }
+            else
+            {
+                Console.WriteLine("Input error");
+                return -1;
             }
         }
 
@@ -114,29 +186,83 @@ namespace CAB301
             Console.WriteLine("Director: ");
             string director = Console.ReadLine();
 
-            Console.WriteLine("Duration: ");
-            int duration = Int32.Parse(Console.ReadLine());
+           
+            int duration = -1;
+            while (duration == -1)
+            {
+                Console.WriteLine("Duration: ");
+                duration = Select_int_from_input();
+            }
 
-            Console.WriteLine("Genere: ");
-            Genere genere = (Genere)Enum.Parse(typeof(Genere), Console.ReadLine().ToUpper());
+            //Loop until a valid Genere is selected  
+            int selection = -1;
+            while (selection < 0 || selection > 8) 
+            {
+                Console.WriteLine("Genere: ");
+                selection = Select_Genere();
+            }
+            Genere genere = (Genere)selection;
 
-            Console.WriteLine("Classification: ");
-            Classification classification = (Classification)Enum.Parse(typeof(Classification), Console.ReadLine().ToUpper());
+            //Loop until a valid Classification is selected
+            selection = -1;
+            while(selection < 0 || selection > 3)
+            {
+                Console.WriteLine("Classification: ");
+                selection = Select_Classification();
+            }
+            Classification classification = (Classification)selection;
+
+            //Loop until a valid Year is selected
+            int release_date = -1;
+            while (release_date == -1)
+            {
+                Console.WriteLine("Release Date(Year): ");
+                release_date = Select_int_from_input();
+            }
 
             //Add Movie to MovieCollection
-            Movie movie = new Movie(title, starring, director, duration, genere, classification);
+            Movie movie = new Movie(title, starring, director, duration, release_date, genere, classification);
             root = movies.Insert_node(root,movie);
+
+            //Message if addition of movie worked or not
+            if(movies.Moive_exists(root,title))
+            {
+                error = title + " successfully added to MovieCollection";
+            }
+            else
+            {
+                error = "Adding " + title +" failed";
+            }
+            screen = 2;
         }
         
         private void Remove_movie()
         {
+            //Will say successfully removed movie even if movie wasnt originally in list.
+
             Console.WriteLine("===========Remove Movie==========");
             Console.WriteLine("Title: ");
             string title = Console.ReadLine();
 
             root = movies.Delete_node(root, title);
+
+            //Message if removing movie worked or not
+            if (!movies.Moive_exists(root, title))
+            {
+                error = title + " successfully removed from MovieCollection";
+            }
+            else
+            {
+                error = "Removing " + title + " failed";
+            }
+            screen = 2;
         }
 
+        private void Resgister_member()
+        {
+            Console.WriteLine("===========Register Member==========");
+            Console.WriteLine("Title: ");
+        }
         private void Staff_menu()
         {
             Console.WriteLine("===========Staff Menu==========");
