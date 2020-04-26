@@ -31,6 +31,7 @@ namespace Enums
         Add_movie,
         Remove_movie,
         Show_copies,
-        Member_login
+        Member_login,
+        Add_member
     }
 }

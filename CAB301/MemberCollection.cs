@@ -86,7 +86,7 @@ namespace CAB301
             return null;
         }
 
-        private Boolean check_member_exists(string first_name, string last_name)
+        public Boolean Exists(string first_name, string last_name)
         {
             //Returns true if a member does exist with the first and last name, returns false if a member does not exist.
             return Search(first_name, last_name) != null;

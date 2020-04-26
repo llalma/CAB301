@@ -18,6 +18,7 @@ namespace CAB301
     class GUI
     {
         MovieCollection movies = new MovieCollection();
+        MemberCollection members = new MemberCollection();
         Node root = null;
         Boolean exit = false;
         Screens screen = Screens.Main_menu;
@@ -50,6 +51,9 @@ namespace CAB301
                 }else if(screen == Screens.Show_copies)
                 {
                     show_copies();
+                }else if(screen == Screens.Add_member)
+                {
+                    Resgister_member();
                 }
                 //Clear console
                 Console.Clear();
@@ -172,11 +176,7 @@ namespace CAB301
             {
                 return selection;
             }
-            else
-            {
-                Console.WriteLine("Input error");
-                return 0;
-            }
+            return 0;
         }
 
         private void Add_new_movie()
@@ -203,6 +203,7 @@ namespace CAB301
                     }
                     else
                     {
+                        //output if movie is deleted from movies cause the number of copies is less than 1.
                         int output = movies.Change_num_copies(root, title, num_copies);
                         if (output == 0)
                         {
@@ -210,6 +211,7 @@ namespace CAB301
                         }
                         else
                         {
+                            //outputs for adding and removing copies of movies.
                             if(num_copies < 0)
                             {
                                 error = -1 * num_copies + " copies of " + title + " removed.";
@@ -354,10 +356,107 @@ namespace CAB301
             screen = Screens.Staff_menu;
         }
 
+        private Int64 check_input_phone_number()
+        {
+            //Read phone number from user input.
+            //needs sperate reading from Select_int_from_input as this needs to return an int64.
+            if (Int64.TryParse(Console.ReadLine(), out Int64 selection))
+            {
+               return selection;
+            }
+            return 0;
+        }
+
+        private Boolean Password_check(string password)
+        {
+            //A true return is a valid password.
+            return password.Length == 4;
+        }
+
         private void Resgister_member()
         {
             Console.WriteLine("===========Register Member==========");
-            Console.WriteLine("Title: ");
+            Console.WriteLine("First name: ");
+            string first_name = Console.ReadLine();
+
+            Console.WriteLine("Last name: ");
+            string last_name =  Console.ReadLine();
+
+            if (members.Exists(first_name, last_name))
+            {
+                //Member exists
+                error = "Member with name "+ first_name + " " + last_name +" already exists";
+            }
+            else
+            {
+                //Member does not exist
+
+                //Street number, loop until number greater than 0
+                int street_number = 0;
+                while (street_number <= 0)
+                {
+                    Console.WriteLine("Street Number: ");
+                    street_number = Select_int_from_input();
+
+                    //Error message
+                    if (street_number <= 0)
+                    {
+                        Console.Out.WriteLine("Input must be greater than 0");
+                    }
+                }
+
+                //Street name
+                Console.WriteLine("Street name: ");
+                string street_name = Console.ReadLine();
+
+                //Subrub name
+                Console.WriteLine("Suburb name: ");
+                string Suburb_name = Console.ReadLine();
+
+                //Phone number, loop until valid number
+                Int64 phone_number = 0;
+                while (phone_number >= 1000000000 && phone_number <= 9999999999)
+                {
+                    phone_number = check_input_phone_number();
+
+                    //Error message
+                    if (phone_number <= 0)
+                    {
+                        Console.Out.WriteLine("Input error");
+                    }
+                }
+
+                //4 digit password
+                string password = "";
+                while (!Password_check(password))
+                {
+                    Console.WriteLine("Password (4 digits): ");
+                    password = Console.ReadLine();
+
+                    //Error message
+                    if (!Password_check(password))
+                    {
+                        Console.Out.WriteLine("Input error");
+                    }
+                }
+
+
+                //Create member and add to MemberColelction
+                Address address = new Address(street_number, street_name, Suburb_name);
+                Member member = new Member(first_name, last_name, address, phone_number, password);
+                members.Add(member);
+
+                //Message if addition of movie worked or not
+                if (members.Exists(first_name,last_name))
+                {
+                    error = first_name + " " + last_name + " successfully added to MovieCollection";
+                }
+                else
+                {
+                    error = "Adding " + first_name + " " + last_name + " failed";
+                }
+                screen = Screens.Staff_menu;
+            }
         }
 
         private void Staff_menu()
@@ -390,6 +489,10 @@ namespace CAB301
             {
                 //Next screen is show number of copies in library
                 screen = Screens.Show_copies;
+            }
+            else if (key == ConsoleKey.D3 || key == ConsoleKey.NumPad3)
+            {
+                screen = Screens.Add_member;
             }
         }
 
