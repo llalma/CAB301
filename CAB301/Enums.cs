@@ -35,6 +35,7 @@ namespace Enums
         Add_member,
         Get_number,
         Display_movies,
-        Member_menu
+        Member_menu,
+        Rent_movie
     }
 }

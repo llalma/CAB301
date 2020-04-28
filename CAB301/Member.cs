@@ -13,6 +13,7 @@ namespace CAB301
         private MovieCollection movies;
         private string password;
         private string username;
+        private MovieCollection rented_movies = new MovieCollection();
 
         public Member(string first_name, string last_name, Address address, Int64 phone_number, string password)
         {
@@ -20,13 +21,29 @@ namespace CAB301
             this.last_name = last_name;
             this.address = address;
             this.phone_number = phone_number;
-            this.Username = last_name+first_name;
+            this.Username = last_name.ToUpper()+first_name.ToUpper();
             this.Password = password;
         }
 
-        public void Add_movie(Movie movie)
+        public string Add_movie(Movie movie)
         {
+            //Rent up to 10 movies at a time.
+            if (rented_movies.Exists(movie.Title))
+            {
+                //Movie is already rented
+                return "You already have " + movie.Title + " ,Movie not rented";
+            }
 
+            //Movie is not rented yet,
+            if(rented_movies.Length() < 10)
+            {
+                //Member does not have greater than 10 movies
+                rented_movies.Insert_node(movie);
+                
+                return "You successfully rented " + movie.Title;
+            }
+            //Member has rented too many movies
+            return "You already have 10 movies. Return a movie before renting again.";
         }
 
         public void Remove_movie(Movie movie)

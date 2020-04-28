@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Text.RegularExpressions;
 using Enums;
 
 //assuming when deleting movie from movie colection it deletes all copies of the movie.
@@ -19,13 +19,20 @@ namespace CAB301
     {
         MovieCollection movies = new MovieCollection();
         MemberCollection members = new MemberCollection();
-        Node root = null;
         Boolean exit = false;
         Screens screen = Screens.Main_menu;
         string error = "";
+        string logged_in = "";
+
+
 
         public GUI()
-        {   
+        {
+            //This is the main function which switches between screens in the GUI.
+
+            //Populate member and movie data
+            Populate();
+
             while (exit == false)
             {
                 //Print error message as console is cleared after each loop. after printing clear error message.
@@ -63,10 +70,22 @@ namespace CAB301
                 }else if(screen == Screens.Member_menu)
                 {
                     Member_menu();
+                }else if(screen == Screens.Display_movies)
+                {
+                    Display_movies();
+                }else if(screen == Screens.Rent_movie)
+                {
+                    Rent_movie();
                 }
                 //Clear console
                 Console.Clear();
             }
+        }
+
+        private void Populate()
+        {
+            movies.Populate();
+            members.Populate();
         }
 
         private void Main_menu()
@@ -197,7 +216,7 @@ namespace CAB301
             Console.WriteLine("Title: ");
             string title = Console.ReadLine();
 
-            if (movies.Exists(root,title))
+            if (movies.Exists(title))
             {
                 //Movie already existed in tree, so change number of copies by input value. can be -ve, if number of copies goes to <= 0 movie is deleted from tree.
 
@@ -216,7 +235,7 @@ namespace CAB301
                     else
                     {
                         //output if movie is deleted from movies cause the number of copies is less than 1.
-                        int output = movies.Change_num_copies(root, title, num_copies);
+                        int output = movies.Change_num_copies(title, num_copies);
                         if (output == 0)
                         {
                             error = title + " Removed from tree";
@@ -311,10 +330,10 @@ namespace CAB301
 
                 //Add Movie to MovieCollection
                 Movie movie = new Movie(title, starring, director, duration, release_date, genere, classification, num_copies);
-                root = movies.Insert_node(root, movie);
+                movies.Insert_node( movie);
 
                 //Message if addition of movie worked or not
-                if (movies.Exists(root, title))
+                if (movies.Exists( title))
                 {
                     error = title + " successfully added to MovieCollection";
                 }
@@ -336,10 +355,10 @@ namespace CAB301
             Console.WriteLine("Title: ");
             string title = Console.ReadLine();
 
-            root = movies.Delete_node(root, title);
+            movies.Delete_node( title);
 
             //Message if removing movie worked or not
-            if (!movies.Exists(root, title))
+            if (!movies.Exists(title))
             {
                 error = title + " successfully removed from MovieCollection";
             }
@@ -356,9 +375,9 @@ namespace CAB301
             Console.WriteLine("Title: ");
             string title = Console.ReadLine();
 
-            if (movies.Exists(root, title))
+            if (movies.Exists( title))
             {
-                error = movies.Search(root, title).Copies + " of " + title + " are in the library.";
+                error = movies.Search(title).Copies + " of " + title + " are in the library.";
             }
             else
             {
@@ -381,8 +400,26 @@ namespace CAB301
 
         private Boolean Password_check(string password)
         {
-            //A true return is a valid password.
-            return password.Length == 4;
+            //Return true if password is length of 4 and only using numbers.
+            
+            //Check string is length of 4
+            if(password.Length != 4)
+            {
+                return false;
+            }
+
+            //Check array only contains numbers
+            char[] arr = password.ToCharArray();
+            for (int i = 0; i < 4; i++)
+            {
+                //Check each digit is a integer.
+                if ((int)arr[i] < (int)'0' || (int)arr[i] > (int)'9')
+                {
+                    return false;
+                }
+            }
+
+            return true;       
         }
 
         private void Register_member()
@@ -427,7 +464,7 @@ namespace CAB301
 
                 //Phone number, loop until valid number
                 Int64 phone_number = 0;
-                while (phone_number >= 1000000000 && phone_number <= 9999999999)
+                while (phone_number < 1000000000 || phone_number > 9999999999)
                 {
                     phone_number = check_input_phone_number();
 
@@ -443,9 +480,12 @@ namespace CAB301
                 while (!Password_check(password))
                 {
                     Console.WriteLine("Password (4 digits): ");
+
+                    //Prevents non digit inputs
                     password = Console.ReadLine();
 
-                    //Error message
+
+                    //Error message, password_check prevents negative numbers and numbers not length of 4.
                     if (!Password_check(password))
                     {
                         Console.Out.WriteLine("Input error");
@@ -481,7 +521,7 @@ namespace CAB301
             string last_name = Console.ReadLine();
 
             //Output message and return to staff menu screen
-            error = first_name + " " + last_name + "Phone number is: " + members.Get_members_number(first_name, last_name);
+            error = first_name + " " + last_name + " Phone number is: " + members.Get_members_number(first_name, last_name);
             screen = Screens.Staff_menu;
         }
 
@@ -558,10 +598,11 @@ namespace CAB301
             Console.WriteLine("Password: ");
             string password = Console.ReadLine();
 
-            if (members.Check_login_info(username,password))
+            if (members.Check_login_info(username.ToUpper(),password))
             {
                 //Successful login, next screen is staff menu.
                 screen = Screens.Member_menu;
+                logged_in = username.ToUpper();
             }
             else
             {
@@ -570,6 +611,37 @@ namespace CAB301
                 error = "Incorrect login information\n";
             }
         }
+
+        private void Display_movies()
+        {
+            error = movies.Print_elements();
+            screen = Screens.Member_menu;
+        }
+
+        private void Rent_movie()
+        {
+            Console.WriteLine("===========Rent Movie==========");
+            Console.WriteLine("Title: ");
+            string title = Console.ReadLine();
+            Movie movie = movies.Search(title.ToUpper()); ;
+
+            if (movie != null && movie.Copies > 0)
+            {
+                error = members.Rent(logged_in,movie);
+
+                if (error.Contains("successfully"))
+                {
+                    movie.Increase_times_rented();
+                }
+            }
+            else
+            {
+                error = "The library does not have a copy of " + title;
+            }
+            //Return to Member menu
+            screen = Screens.Member_menu;
+        }
+
         private void Member_menu()
         {
             Console.WriteLine("===========Member Menu===========");
@@ -588,15 +660,25 @@ namespace CAB301
 
             if (key == ConsoleKey.D0 || key == ConsoleKey.NumPad0)
             {
-                //Next screen is Add movies to library
+                //Next screen is Main menu
                 screen = Screens.Main_menu;
+
+                //Log out user.
+                logged_in = "";
             }
             else if (key == ConsoleKey.D1 || key == ConsoleKey.NumPad1)
             {
-                //Next screen is Add movies to library
+                //Next screen is Show movies
                 screen = Screens.Display_movies;
             }
+            else if (key == ConsoleKey.D2 || key == ConsoleKey.NumPad2)
+            {
+                //Next screen is Show movies
+                screen = Screens.Rent_movie;
+            }
         }
+
+
 
 
     }

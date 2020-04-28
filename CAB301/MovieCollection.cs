@@ -5,212 +5,89 @@ using System.Text;
 
 namespace CAB301
 {
-    public class Node
-    {
-        //Use movie title as key. compares string using String.compare()
-        public Movie movie;
-        public Node left;
-        public Node right;
-
-        public Node(Movie movie)
-        {
-            this.movie = movie;
-            this.left = null;
-            this.right = null;
-        }
-    }
-
     public class MovieCollection
     {
-        public Node Insert_node(Node root,Movie movie)
+        BST tree = new BST();
+        Node root = null;
+
+        public Node Populate()
         {
-            if(root == null)
-            {
-                //If no root node
-                root = new Node(movie);
-            }
-            else if (String.Compare(movie.Title, root.movie.Title) < 0)
-            {
-                //key is less than current node, so go to left of current node
-                root.left = Insert_node(root.left, movie);
+            Movie movie1 = new Movie("Movie 5", "The Rock", "No idea", 120, 2019,Genere.ACTION, Classification.MA15, 5 );
+            Movie movie2 = new Movie("Movie 4", "Daniel Radcliffe", "No idea", 60, 2019, Genere.ADVENTURE, Classification.PG, 0);
+            Movie movie3 = new Movie("Movie 2", "RGJ", "No idea", 240, 2011, Genere.ACTION, Classification.PG, 6);
+            Movie movie4 = new Movie("Movie 1", "Chadwick Boseman", "Ryan Coogler", 60, 2014, Genere.SCI_FI, Classification.M15, 1);
+            Movie movie5 = new Movie("Movie 7", "Christan Bale", "No idea", 1000, 2017, Genere.ACTION, Classification.MA15, 6);
+            Movie movie6 = new Movie("Movie 6", "Chadwick Boseman", "Ryan Coogler", 60, 2019, Genere.SCI_FI, Classification.M15, 6);
+            Movie movie7 = new Movie("Movie 3", "Christan Bale", "No idea", 1000, 2011, Genere.ACTION, Classification.MA15, 3);
 
-            }
-            else
-            {
-                //key is greater than current node, so go to right of current node
-                root.right = Insert_node(root.right, movie);
+            root = tree.Insert_node(root, movie1);
+            root = tree.Insert_node(root, movie2);
+            root = tree.Insert_node(root, movie3);
+            root = tree.Insert_node(root, movie4);
+            root = tree.Insert_node(root, movie5);
+            root = tree.Insert_node(root, movie6);
+            root = tree.Insert_node(root, movie7);
 
-            }
-
-            return root;        
-        }
-
-        public Movie Search(Node root,string title)
-        {
-            //Find a movie in the tree by title.
-            if(root == null)
-            {
-                //If movie not in tree
-                return null;
-            }
-            else if(String.Compare(title,root.movie.Title) == 0)
-            {
-                //Same movie
-                return root.movie;
-            }
-            else if (String.Compare(title, root.movie.Title) < 0)
-            {
-                //key less than current
-                return Search(root.left, title);
-            }
-            else
-            {
-                //key to right
-                return Search(root.right, title);
-            }
-        }
-
-        private Node One_child_delete(Node root)
-        {    
-            //Return node when there is only 1 child.
-            if(root.left == null)
-            {
-                return root.right;
-            }
-            else
-            {
-                return root.left;
-            }
-        }
-
-        private Movie Min_key(Node root)
-        {
-            //Find in order sucessor to cuurrent root. basically find smallest value to right of current node
-            //Given value when initially calling, is right of root wanted to find.
-
-            while(root.left != null)
-            {
-                return Min_key(root.left);
-            }
-            return root.movie;
-        }
-
-        public Node Delete_node(Node root, string title)
-        {
-            //Delete Nofe from tree given a title of a movie
-
-            //If tree is empty
-            if (root == null)
-            {
-                return root;
-            }
-
-            //Search until key is found
-            if(String.Compare(title,root.movie.Title) < 0)
-            {
-                //Move left
-                root.left = Delete_node(root.left, title);
-            }
-            else if(String.Compare(title, root.movie.Title) > 0)
-            {
-                //Move right
-                root.right = Delete_node(root.right, title);
-            }
-            else
-            {
-                //Remove this Node
-
-                //Root has no children
-                if(root.left == null && root.right == null)
-                {
-                    return null;
-                }
-                //Root only has 1 child.
-                if(root.left != null ^ root.right != null)
-                {
-                    return One_child_delete(root);
-                }
-                //Root has 2 children.
-                else
-                {
-                    //Make min key to right of current node, the current node.
-                    root.movie = Min_key(root.right);
-                    //Delete node you just made current node so there are no duplciates.
-                    root.right = Delete_node(root.right, root.movie.Title);
-                }
-            }
             return root;
         }
 
-        public static string Print_tree(Node root, String indent, Boolean last, string direction)
-        {
-            //Returns a string of the output of the current tree.
-            //when calling use the following command Print_tree(root, "", true,"")
-
-            string output = "";
-            output += indent + "+ -" + direction + ":" + root.movie.Title + "\n";
-            //Console.WriteLine(indent + "+-" + direction + ":" + root.movie.Title);
-            indent += last ? "   " : "|  ";
-
-            //Get Number of children in tree
-            int childern_count = 0;
-            if(root.left != null)
-            {
-                childern_count++;
-            }
-            if (root.right != null)
-            {
-                childern_count++;
-            }
-
-            if (childern_count == 1)
-            {
-                //If only 1 child print the child
-                if(root.left != null)
-                {
-                    output += Print_tree(root.left, indent, true, "Left");
-                }
-                else
-                {
-                    output+= Print_tree(root.right, indent, true, "Right");
-                }
-            }
-            else if(childern_count == 2)
-            {
-                //If 2 children print both children
-                output += Print_tree(root.left, indent, false,"Left");
-                output += Print_tree(root.right, indent, true,"Right");
-            }
-
-            return output;
-        }
-
-        public Boolean Exists(Node root, string title)
+        public Boolean Exists(string title)
         {
             //Returns true if movie is in tree.
-            if(Search(root, title) != null)
+            if(tree.Search(root, title) != null)
             {
                 return true;
             }
             return false;
         }
 
-        public int Change_num_copies(Node root,string title,int copies)
+        public int Change_num_copies(string title,int copies)
         {
-            //Increase the numebr of copies by the input copies. can be negative to decrease the number of copies.
+            //Increase the number of copies by the input copies. can be negative to decrease the number of copies.
             //Returns new number of copies for movies.
 
-            Movie movie = Search(root, title);
+            Movie movie = Search( title);
             movie.Copies += copies;
 
 
-            if (movie.Copies <= 0)
+            if (movie.Copies < 0)
             {
-                //If the number of copies is 0 or goes below it remove movie from tree
-                Delete_node(root, title);
+                //If the number of copies is less than 0 remove movie from tree
+                Delete_node( title);
                 return 0;
             }
-            return Search(root, title).Copies;
+            return Search( title).Copies;
+        }
+
+        public Node Delete_node(string title)
+        {
+            return tree.Delete_node(root, title);
+        }
+
+        public void Insert_node(Movie movie)
+        {
+            root = tree.Insert_node(root, movie);
+        }
+
+        public Movie Search(string title)
+        {
+            return tree.Search(root, title);
+        }
+
+        public void Print_tree()
+        {
+            Console.Out.WriteLine(BST.Print_tree(root,"",true,""));
+        }
+
+        public string Print_elements()
+        {
+            return tree.In_order(root);
+        }
+
+        public int Length()
+        {
+            //Returns number of elements in tree
+            return tree.Length(root);
         }
     }
 }
