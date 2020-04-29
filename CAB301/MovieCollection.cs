@@ -9,6 +9,7 @@ namespace CAB301
     {
         BST tree = new BST();
         Node root = null;
+        Ordered_list ordered = new Ordered_list();
 
         public Node Populate()
         {
@@ -28,6 +29,7 @@ namespace CAB301
             root = tree.Insert_node(root, movie6);
             root = tree.Insert_node(root, movie7);
 
+
             return root;
         }
 
@@ -46,22 +48,27 @@ namespace CAB301
             //Increase the number of copies by the input copies. can be negative to decrease the number of copies.
             //Returns new number of copies for movies.
 
-            Movie movie = Search( title);
-            movie.Copies += copies;
+            Movie movie = Search(title);
 
-
-            if (movie.Copies < 0)
+            if (movie != null)
             {
-                //If the number of copies is less than 0 remove movie from tree
-                Delete_node( title);
-                return 0;
+                movie.Copies += copies;
+
+
+                if (movie.Copies < 0)
+                {
+                    //If the number of copies is less than 0 remove movie from tree
+                    Delete_node(title);
+                    return 0;
+                }
+                return Search(title).Copies;
             }
-            return Search( title).Copies;
+            return -1;
         }
 
-        public Node Delete_node(string title)
+        public void Delete_node(string title)
         {
-            return tree.Delete_node(root, title);
+            root = tree.Delete_node(root, title);
         }
 
         public void Insert_node(Movie movie)
@@ -79,9 +86,22 @@ namespace CAB301
             Console.Out.WriteLine(BST.Print_tree(root,"",true,""));
         }
 
-        public string Print_elements()
+        public string Print_elements(string mode)
         {
-            return tree.In_order(root);
+            //Input can be Title to only print the titles of movies
+            // or can be All to print all details about movie.
+
+            return tree.In_order(root,mode);
+        }
+
+        public string Most_popular()
+        {
+            return ordered.Get_list();
+        }
+
+        public void Update_most_popular(Movie movie)
+        {
+            ordered.Insert(movie);
         }
 
         public int Length()

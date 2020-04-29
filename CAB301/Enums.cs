@@ -30,12 +30,14 @@ namespace Enums
         Staff_menu,
         Add_movie,
         Remove_movie,
-        Show_copies,
         Member_login,
         Add_member,
         Get_number,
         Display_movies,
         Member_menu,
-        Rent_movie
+        Rent_movie,
+        Return_movie,
+        Borrowed_movies,
+        Most_popular
     }
 }

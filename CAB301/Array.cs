@@ -108,5 +108,10 @@ namespace CAB301
         {
             return Search(username).Add_movie(movie);
         }
+
+        public string Return(string username, Movie movie)
+        {
+            return Search(username).Remove_movie(movie);
+        }
     }
 }

@@ -28,17 +28,17 @@ namespace CAB301
         public string Add_movie(Movie movie)
         {
             //Rent up to 10 movies at a time.
-            if (rented_movies.Exists(movie.Title))
+            if (Rented_movies.Exists(movie.Title))
             {
                 //Movie is already rented
                 return "You already have " + movie.Title + " ,Movie not rented";
             }
 
             //Movie is not rented yet,
-            if(rented_movies.Length() < 10)
+            if(Rented_movies.Length() < 10)
             {
                 //Member does not have greater than 10 movies
-                rented_movies.Insert_node(movie);
+                Rented_movies.Insert_node(movie);
                 
                 return "You successfully rented " + movie.Title;
             }
@@ -46,9 +46,20 @@ namespace CAB301
             return "You already have 10 movies. Return a movie before renting again.";
         }
 
-        public void Remove_movie(Movie movie)
+        public string Remove_movie(Movie movie)
         {
-
+            if (movie != null)
+            {
+                //Return movie only if in the users rented movies
+                if (Rented_movies.Exists(movie.Title))
+                {
+                    //Movie is rented by user, so return movie
+                    Rented_movies.Delete_node(movie.Title);
+                    return "You have returned " + movie.Title;
+                }
+            }
+            //Movie is not rented
+            return "You do not have that rented.";
         }
 
         public string First_name { get => first_name; set => first_name = value; }
@@ -57,5 +68,6 @@ namespace CAB301
         internal Address Address { get => address; set => address = value; }
         public string Password { get => password; set => password = value; }
         public string Username { get => username; set => username = value; }
+        public MovieCollection Rented_movies { get => rented_movies; set => rented_movies = value; }
     }
 }

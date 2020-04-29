@@ -184,7 +184,7 @@ namespace CAB301
             return output;
         }
         
-        public string In_order(Node root)
+        public string In_order(Node root,string mode)
         {
             //Just prints data, does not  show branches. Does inorder traversal.
             string output = "";
@@ -192,14 +192,30 @@ namespace CAB301
             if(root != null)
             {
                 //Get left children first
-                output += In_order(root.left);
+                output += In_order(root.left,mode);
                 //If no more left children print 
-                output += root.movie.ToString() + "\n\n";
+                if(String.Compare(mode.ToUpper(),"TITLE") == 0)
+                {
+                    output += root.movie.Title + "\n";
+                }
+                else
+                {
+                    //Print all elements of movie, for display movies function
+                    output += root.movie.ToString() + "\n\n";
+                }
+               
                 //Get right children
-                output += In_order(root.right);
+                output += In_order(root.right,mode);
 
             }
             return output;
+        }
+
+        public string Most_popular()
+        {
+
+
+            return "";
         }
 
         public int Length(Node root)

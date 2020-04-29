@@ -55,9 +55,6 @@ namespace CAB301
                 }else if(screen == Screens.Remove_movie)
                 {
                     Remove_movie();
-                }else if(screen == Screens.Show_copies)
-                {
-                    show_copies();
                 }else if(screen == Screens.Add_member)
                 {
                     Register_member();
@@ -76,6 +73,14 @@ namespace CAB301
                 }else if(screen == Screens.Rent_movie)
                 {
                     Rent_movie();
+                }else if(screen == Screens.Return_movie)
+                {
+                    Return_movie();
+                }else if(screen == Screens.Borrowed_movies) {
+                    Show_borrowed_movies();
+                }else if(screen == Screens.Most_popular)
+                {
+                    Most_popular();
                 }
                 //Clear console
                 Console.Clear();
@@ -121,7 +126,7 @@ namespace CAB301
             {
                 //Invalid key
                 screen = Screens.Main_menu;
-                Console.Out.WriteLine("Invalid Key please try again");
+                error = "Invalid Key please try again";
             }
         }
 
@@ -369,24 +374,6 @@ namespace CAB301
             screen = Screens.Staff_menu;
         }
 
-        private void show_copies()
-        {
-            Console.WriteLine("===========Show remianing copies==========");
-            Console.WriteLine("Title: ");
-            string title = Console.ReadLine();
-
-            if (movies.Exists( title))
-            {
-                error = movies.Search(title).Copies + " of " + title + " are in the library.";
-            }
-            else
-            {
-                error = "Movie does not exist";
-            }
-            
-            screen = Screens.Staff_menu;
-        }
-
         private Int64 check_input_phone_number()
         {
             //Read phone number from user input.
@@ -507,8 +494,8 @@ namespace CAB301
                 {
                     error = "Adding " + first_name + " " + last_name + " failed";
                 }
-                screen = Screens.Staff_menu;
             }
+            screen = Screens.Staff_menu;
         }
 
         private void Get_number()
@@ -532,7 +519,6 @@ namespace CAB301
             Console.WriteLine("2. Remove a movie DVD");
             Console.WriteLine("3. Register a new Member");
             Console.WriteLine("4. Find a registerd member's phone number");
-            Console.WriteLine("5. Show number of copies remaining");
             Console.WriteLine("0. Return to main menu");
             Console.WriteLine("=================================");
             Console.WriteLine("Please make a selection (1-4 or 0 to return to main menu): ");
@@ -551,11 +537,6 @@ namespace CAB301
                 //Next screen is remove movie from library
                 screen = Screens.Remove_movie;
             }
-            else if (key == ConsoleKey.D5 || key == ConsoleKey.NumPad5)
-            {
-                //Next screen is show number of copies in library
-                screen = Screens.Show_copies;
-            }
             else if (key == ConsoleKey.D3 || key == ConsoleKey.NumPad3)
             {
                 screen = Screens.Add_member;
@@ -571,7 +552,7 @@ namespace CAB301
             else
             {
                 //Not needed but to simplify reading the code.
-                error = "Wrong input";
+                error = "Invalid input";
                 screen = Screens.Staff_menu;
             }
         }
@@ -614,7 +595,7 @@ namespace CAB301
 
         private void Display_movies()
         {
-            error = movies.Print_elements();
+            error = movies.Print_elements("All");
             screen = Screens.Member_menu;
         }
 
@@ -623,15 +604,19 @@ namespace CAB301
             Console.WriteLine("===========Rent Movie==========");
             Console.WriteLine("Title: ");
             string title = Console.ReadLine();
-            Movie movie = movies.Search(title.ToUpper()); ;
+            Movie movie = movies.Search(title.ToUpper());
 
             if (movie != null && movie.Copies > 0)
             {
                 error = members.Rent(logged_in,movie);
 
+                //Increaes the number of times rented, using the statement below instead of passing movie colleciton into the functions.
                 if (error.Contains("successfully"))
                 {
+                    //Increase times rentedand remove 1 from avaliable copies in libarary
                     movie.Increase_times_rented();
+                    //Check if list needs to be updated, for movies most times rented
+                    movies.Update_most_popular(movie);
                 }
             }
             else
@@ -639,6 +624,47 @@ namespace CAB301
                 error = "The library does not have a copy of " + title;
             }
             //Return to Member menu
+            screen = Screens.Member_menu;
+        }
+
+        private void Return_movie()
+        {
+            Console.WriteLine("===========Return Movie==========");
+            Console.Out.WriteLine("Title: ");
+            string title = Console.ReadLine();
+            Movie movie = movies.Search(title.ToUpper()); ;
+
+            //Return movie
+            error = members.Return(logged_in, movie);
+            movies.Change_num_copies(title.ToUpper(), 1);
+
+
+            //Return to member menu.
+            screen = Screens.Member_menu;
+        }
+
+        private void Show_borrowed_movies()
+        {
+            error = members.Borrowed(logged_in);
+
+            //If no movies were rented.
+            if(error == "")
+            {
+                error = "You do not have any movies rented";
+            }
+            else
+            {
+                //Add some text to start of message
+                error = "You have the following movies rented:\n" + error;
+            }
+
+            screen = Screens.Member_menu;
+        }
+
+        private void Most_popular()
+        {
+            error = movies.Most_popular();
+
             screen = Screens.Member_menu;
         }
 
@@ -675,6 +701,22 @@ namespace CAB301
             {
                 //Next screen is Show movies
                 screen = Screens.Rent_movie;
+            }else if (key == ConsoleKey.D3 || key == ConsoleKey.NumPad3)
+            {
+                screen = Screens.Return_movie;
+            }
+            else if (key == ConsoleKey.D4 || key == ConsoleKey.NumPad4)
+            {
+                screen = Screens.Borrowed_movies;
+            }
+            else if (key == ConsoleKey.D5 || key == ConsoleKey.NumPad5)
+            {
+                screen = Screens.Most_popular;
+            }
+            else
+            {
+                error = "Invalid input";
+                screen = Screens.Member_menu;
             }
         }
 

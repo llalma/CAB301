@@ -11,12 +11,12 @@ namespace CAB301
         public void Populate()
         {
             Address address1 = new Address(38, "Elma st", "Salisbury");
-            Member member1 = new Member("Griffyn", "Goodall", address1, 0830947834, "0000");
+            Member member1 = new Member("G", "G", address1, 0830947834, "0000");
 
-            Member member2 = new Member("l", "h", address1, 0414984327, "0000");
+            Member member2 = new Member("l", "h", address1, 9403758944, "0000");
 
             Address address2 = new Address(135, "Duporth ave", "Maroochydore");
-            Member member3 = new Member("Zackery", "Benson", address2, 1839347594, "1111");
+            Member member3 = new Member("zack", "ben", address2, 1839347594, "1111");
 
             Address address3 = new Address(56, "john st", "Whyalla");
             Member member4 = new Member("John", "johnson", address3, 1739473954,"2222");
@@ -66,6 +66,17 @@ namespace CAB301
         public string Rent(string username,Movie movie)
         {
             return members.Rent(username,movie);
+        }
+
+        public string Return(string username, Movie movie)
+        {
+            return members.Return(username,movie);
+        }
+
+        public string Borrowed(string username)
+        {
+            //Shows borrowed movies by user.
+            return members.Search(username).Rented_movies.Print_elements("Title");
         }
     }
 }
