@@ -9,7 +9,7 @@ namespace CAB301
     {
         BST tree = new BST();
         Node root = null;
-        Ordered_list ordered = new Ordered_list();
+        Ordered_Array ordered = new Ordered_Array();
 
         public Node Populate()
         {

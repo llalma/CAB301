@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CAB301
 {
-    class Ordered_list
+    class Ordered_Array
     {
         Movie[] ordered = new Movie[10];
 
