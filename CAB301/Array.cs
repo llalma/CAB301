@@ -28,12 +28,6 @@ namespace CAB301
             //Add element to array, no warning if index is over 100 though as said in slack that 10 is enough, so 100 should be fine. 
             //Makes all letetrs and first and last name caps to make searching easier.
 
-            //Approaches
-            //with for loop find first element which is not null O(n) time
-            //in first postion of array save first open position, makes adding faster when adding at end of the list, makes removing same.
-            //Skip lists?
-            //ordered list?
-
             if (members[first_unused_index] != null)
             {
                 first_unused_index = find_first_unused_index();
@@ -48,6 +42,31 @@ namespace CAB301
             //Guess that next position is avaliable, if not can use function from above.
             //This reduces runtime occassionaly.
             first_unused_index++;
+
+            //Sort the array using insertion sort based on alphabetical order.
+            Sort();
+        }
+
+        private void Sort()
+        {
+            //Sorts by alphabetical order, sorts by username, uses inserstion sort. Is better for almost sorted arrays.
+            for (int i = 1; i < find_first_unused_index(); ++i)
+            {
+                Member member = members[i];
+                string key =  member.Last_name.ToUpper() + member.First_name.ToUpper();
+                int j = i - 1;
+
+                // Move elements of arr[0..i-1], 
+                // that are greater than key, 
+                // to one position ahead of 
+                // their current position 
+                while (j >= 0 && String.Compare(members[j].Last_name + members[j].First_name, key) > 0)
+                {
+                    members[j + 1] = members[j];
+                    j = j - 1;
+                }
+                members[j + 1] = member;
+            }
         }
 
         public Boolean Remove(string first_name, string last_name)
@@ -74,33 +93,52 @@ namespace CAB301
         {
             //Returns the member given a first and last name. returns null if not in array.
             //Remove member from list given full name.
-            for (int i = 0; i < members.Length; i++)
+
+            int l = 0;
+            int r = find_first_unused_index() - 1;
+            string key = last_name.ToUpper() + first_name.ToUpper();
+
+            while (l <= r)
             {
-                //Save into variable to reduce processing time, assuming using linked lists when getting to variable
-                Member member = members[i];
-                if (member != null && String.Compare(member.First_name + member.Last_name, (first_name.ToUpper() + last_name.ToUpper())) == 0)
+                int m = (l + r) / 2;
+                if (key == members[m].Last_name + members[m].First_name)
                 {
-                    return member;
+                    return members[m];
+                }
+                else if (String.Compare(key , members[m].Last_name + members[m].First_name)< 0)
+                {
+                    r = m - 1;
+                }
+                else
+                {
+                    l = m + 1;
                 }
             }
-
             return null;
         }
 
         public Member Search(string username)
         {
-            //Returns the member given a username. returns null if not in array.
-            //Remove member from list given full name.
-            for (int i = 0; i < members.Length; i++)
+            int l = 0;
+            int r = find_first_unused_index() - 1;
+            string key = username.ToUpper();
+
+            while (l <= r)
             {
-                //Save into variable to reduce processing time, assuming using linked lists when getting to variable
-                Member member = members[i];
-                if (member != null && String.Compare(member.Username, username) == 0)
+                int m = (l + r) / 2;
+                if (key == members[m].Last_name + members[m].First_name)
                 {
-                    return member;
+                    return members[m];
+                }
+                else if (String.Compare(key, members[m].Last_name + members[m].First_name) < 0)
+                {
+                    r = m - 1;
+                }
+                else
+                {
+                    l = m + 1;
                 }
             }
-
             return null;
         }
 

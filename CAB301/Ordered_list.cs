@@ -27,7 +27,7 @@ namespace CAB301
                     {
                         //Replace 10th position, will reorder later
                         ordered[9] = movie;
-                        Sort(ordered ,0, Get_used_spaces());
+                        Sort();
                     }
                     else
                     {
@@ -39,44 +39,30 @@ namespace CAB301
             else
             {
                 //If movie did exist in list already, just sort list.
-                Sort(ordered,0, Get_used_spaces()-1);
+                Sort();
             }
         }
 
-        static private void Sort(Movie[] arr, int start, int end)
+        private void Sort()
         {
-            int pivot_indx = 0;
-
-            if(start < end)
+            //Sorts by alphabetical order, sorts by username, uses inserstion sort. Is better for almost sorted arrays.
+            for (int i = 1; i < Get_used_spaces(); ++i)
             {
-                pivot_indx = Partition(arr, start, end);
-                Sort(arr, start, pivot_indx - 1);
-                Sort(arr, pivot_indx + 1, end);
-            }
-        }
+                Movie movie = ordered[i];
+                string key = movie.Title;
+                int j = i - 1;
 
-        static private int Partition(Movie[] arr, int start, int end)
-        {
-            int pivot = arr[end].Times_rented;
-            int i = start - 1;
-
-            for(int j = start; j<end; j++)
-            {
-                if(arr[j].Times_rented <= pivot)
+                // Move elements of arr[0..i-1], 
+                // that are greater than key, 
+                // to one position ahead of 
+                // their current position 
+                while (j >= 0 && String.Compare(ordered[j].Title, key) > 0)
                 {
-                    i++;
-                    Swap(arr, i, j);
+                    ordered[j + 1] = ordered[j];
+                    j = j - 1;
                 }
+                ordered[j + 1] = movie;
             }
-            Swap(arr, i + 1, end);
-            return i + 1;
-        }
-
-        static private void Swap(Movie[] arr,int a,int b)
-        {
-            Movie temp = arr[a];
-            arr[a] = arr[b];
-            arr[b] = temp;
         }
 
         public string Get_list()

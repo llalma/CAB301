@@ -11,15 +11,15 @@ namespace CAB301
         public void Populate()
         {
             Address address1 = new Address(38, "Elma st", "Salisbury");
-            Member member1 = new Member("G", "G", address1, 0830947834, "0000");
+            Member member1 = new Member("c", "c", address1, 0830947834, "0000");
 
-            Member member2 = new Member("l", "h", address1, 9403758944, "0000");
+            Member member2 = new Member("d", "d", address1, 9403758944, "0000");
 
             Address address2 = new Address(135, "Duporth ave", "Maroochydore");
-            Member member3 = new Member("zack", "ben", address2, 1839347594, "1111");
+            Member member3 = new Member("a", "a", address2, 1839347594, "1111");
 
             Address address3 = new Address(56, "john st", "Whyalla");
-            Member member4 = new Member("John", "johnson", address3, 1739473954,"2222");
+            Member member4 = new Member("b", "b", address3, 1739473954,"2222");
 
             members.Add(member1);
             members.Add(member2);
@@ -45,7 +45,13 @@ namespace CAB301
 
         public Int64 Get_members_number(string first_name, string last_name)
         {
-            return members.Search(first_name, last_name).Phone_number;
+            Member member = members.Search(first_name, last_name);
+
+            if(member != null)
+            {
+                return member.Phone_number;
+            }
+            return -1;
         }
         
         public Boolean Check_login_info(string username,string password)

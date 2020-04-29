@@ -450,17 +450,8 @@ namespace CAB301
                 string Suburb_name = Console.ReadLine();
 
                 //Phone number, loop until valid number
-                Int64 phone_number = 0;
-                while (phone_number < 1000000000 || phone_number > 9999999999)
-                {
-                    phone_number = check_input_phone_number();
-
-                    //Error message
-                    if (phone_number <= 0)
-                    {
-                        Console.Out.WriteLine("Input error");
-                    }
-                }
+                Console.WriteLine("Phone Number: ");
+                Int64 phone_number = check_input_phone_number();
 
                 //4 digit password
                 string password = "";
@@ -508,7 +499,16 @@ namespace CAB301
             string last_name = Console.ReadLine();
 
             //Output message and return to staff menu screen
-            error = first_name + " " + last_name + " Phone number is: " + members.Get_members_number(first_name, last_name);
+            Int64 number = members.Get_members_number(first_name, last_name);
+
+            if(number == -1)
+            {
+                error = "User does not exist";
+            }
+            else
+            {
+                error = first_name + " " + last_name + " Phone number is: " + number;
+            }
             screen = Screens.Staff_menu;
         }
 
