@@ -100,15 +100,15 @@ namespace CAB301
             return ordered.Get_list();
         }
 
-        private void heapify(string[] arr, int n, int i)
+        private void heapify(string[] movies, int n, int i)
         {
             // Find largest among root, left child and right child
             int largest = i;
             int left = 2 * i + 1;
             int right = 2 * i + 2;
-            string[] array_left = arr[left].Split(",");
-            string[] array_right = arr[right].Split(",");
-            string[] array_largest = arr[i].Split(",");
+            string[] array_left = movies[left].Split(",");
+            string[] array_right = movies[right].Split(",");
+            string[] array_largest = movies[i].Split(",");
 
             //Compare first position of array as that is the number of times the movie has been rented.
             if (left < n && String.Compare(array_left[1], array_largest[1]) > 0)
@@ -121,11 +121,11 @@ namespace CAB301
             if (largest != i)
             {
                 //Swap elements of array
-                string temp = arr[i];
-                arr[i] = arr[largest];
-                arr[largest] = temp;
+                string temp = movies[i];
+                movies[i] = movies[largest];
+                movies[largest] = temp;
 
-                heapify(arr, n, largest);
+                heapify(movies, n, largest);
             }
         }
 
@@ -141,6 +141,13 @@ namespace CAB301
             }
 
             //Just print first 10 movies.
+            int length = movies.Length;
+
+            if (length > 9)
+            {
+                length = 10;
+            }
+
             for(int i = 0; i < movies.Length; i++)
             {
                 string[] movie = movies[i].Split(",");

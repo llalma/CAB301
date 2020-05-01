@@ -214,13 +214,6 @@ namespace CAB301
             return output;
         }
 
-        public string Most_popular()
-        {
-
-
-            return "";
-        }
-
         public int Length(Node root)
         {
             int output = 0;
