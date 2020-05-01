@@ -94,9 +94,72 @@ namespace CAB301
             return tree.In_order(root,mode);
         }
 
-        public string Most_popular()
+        public string Most_popular_list()
         {
+            //Uses the list method that uses insertion sort, a list is always avaliable in top 10 order.
             return ordered.Get_list();
+        }
+
+        private void heapify(string[] arr, int n, int i)
+        {
+            // Find largest among root, left child and right child
+            int largest = i;
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
+            string[] array_left = arr[left].Split(",");
+            string[] array_right = arr[right].Split(",");
+            string[] array_largest = arr[i].Split(",");
+
+            //Compare first position of array as that is the number of times the movie has been rented.
+            if (left < n && String.Compare(array_left[1], array_largest[1]) > 0)
+                largest = left;
+
+            if (right < n && String.Compare(array_right[1], array_largest[1]) > 0)
+                largest = right;
+
+            // Swap and continue heapifying if root is not largest
+            if (largest != i)
+            {
+                //Swap elements of array
+                string temp = arr[i];
+                arr[i] = arr[largest];
+                arr[largest] = temp;
+
+                heapify(arr, n, largest);
+            }
+        }
+
+        public string Most_popular_call()
+        {
+            //Everytime this is called a 10 ten list is  made from the tree. Reads in array using an in order read before sorting. uses min heap sort.
+            string output = "";
+            string[] movies = Print_elements("TOP10").Split("\n", StringSplitOptions.RemoveEmptyEntries);
+
+            for (int i = (movies.Length-1)/2-1; i >= 0; i--)
+            {
+                heapify(movies, movies.Length, i);
+            }
+
+            //Just print first 10 movies.
+            for(int i = 0; i < movies.Length; i++)
+            {
+                string[] movie = movies[i].Split(",");
+
+                //Only print movie if number of times rented does not == 0.
+                if (movie[1] != "0")
+                {
+                    output = output + movie[0] + " borrowed " + movie[1] + " times\n";
+                }
+            }
+
+            if(output == "")
+            {
+                return "No movies have ever been rented.";
+            }
+            else
+            {
+                return "Top 10 movies are:\n" + output;
+            }       
         }
 
         public void Update_most_popular(Movie movie)

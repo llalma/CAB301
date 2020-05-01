@@ -197,6 +197,9 @@ namespace CAB301
                 if(String.Compare(mode.ToUpper(),"TITLE") == 0)
                 {
                     output += root.movie.Title + "\n";
+                }else if (String.Compare(mode.ToUpper(), "TOP10") == 0)
+                {
+                    output += root.movie.Title + "," + root.movie.Times_rented + "\n";
                 }
                 else
                 {
