@@ -19,6 +19,7 @@ namespace CAB301
                 if (ordered[9] == null)
                 {
                     ordered[last_used_space] = movie;
+                    Sort();
                 }
                 //If 10 elements, see if new movie is larger than movie is 10 position
                 else
@@ -49,14 +50,14 @@ namespace CAB301
             for (int i = 1; i < Get_used_spaces(); ++i)
             {
                 Movie movie = ordered[i];
-                string key = movie.Title;
+                int key = movie.Times_rented;
                 int j = i - 1;
 
                 // Move elements of arr[0..i-1], 
                 // that are greater than key, 
                 // to one position ahead of 
                 // their current position 
-                while (j >= 0 && String.Compare(ordered[j].Title, key) > 0)
+                while (j >= 0 && ordered[j].Times_rented > key)
                 {
                     ordered[j + 1] = ordered[j];
                     j = j - 1;

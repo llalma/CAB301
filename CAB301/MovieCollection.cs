@@ -106,16 +106,30 @@ namespace CAB301
             int largest = i;
             int left = 2 * i + 1;
             int right = 2 * i + 2;
-            string[] array_left = movies[left].Split(",");
-            string[] array_right = movies[right].Split(",");
+           
+            
             string[] array_largest = movies[i].Split(",");
 
             //Compare first position of array as that is the number of times the movie has been rented.
-            if (left < n && String.Compare(array_left[1], array_largest[1]) > 0)
-                largest = left;
-
-            if (right < n && String.Compare(array_right[1], array_largest[1]) > 0)
-                largest = right;
+            //Uses 2 if satements otherwise would not be able to save to array_left if index was out of bounds.
+            if(left < n)
+            {
+                string[] array_left = movies[left].Split(",");
+                if(String.Compare(array_left[1], array_largest[1]) > 0)
+                {
+                    largest = left;
+                }
+            }
+        
+            if(right < n)
+            {
+                string[] array_right = movies[right].Split(",");
+                if(String.Compare(array_right[1], array_largest[1]) > 0)
+                {
+                    largest = right;
+                }
+            }
+                
 
             // Swap and continue heapifying if root is not largest
             if (largest != i)
