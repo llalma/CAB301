@@ -36,7 +36,7 @@ namespace CAB301
         public Boolean Exists(string title)
         {
             //Returns true if movie is in tree.
-            if(tree.Search(root, title) != null)
+            if(tree.Search(root, title.ToUpper()) != null)
             {
                 return true;
             }

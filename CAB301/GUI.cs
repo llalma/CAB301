@@ -219,7 +219,7 @@ namespace CAB301
         {
             Console.WriteLine("===========Add New Movie==========");
             Console.WriteLine("Title: ");
-            string title = Console.ReadLine();
+            string title = Console.ReadLine().ToUpper();
 
             if (movies.Exists(title))
             {
@@ -358,9 +358,9 @@ namespace CAB301
 
             Console.WriteLine("===========Remove Movie==========");
             Console.WriteLine("Title: ");
-            string title = Console.ReadLine();
+            string title = Console.ReadLine().ToUpper();
 
-            movies.Delete_node( title);
+            movies.Delete_node(title);
 
             //Message if removing movie worked or not
             if (!movies.Exists(title))

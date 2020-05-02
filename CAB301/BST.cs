@@ -46,6 +46,7 @@ namespace CAB301
 
         public Movie Search(Node root, string title)
         {
+            title = title.ToUpper();
             //Find a movie in the tree by title.
             if (root == null)
             {
@@ -96,7 +97,8 @@ namespace CAB301
 
         public Node Delete_node(Node root, string title)
         {
-            //Delete Nofe from tree given a title of a movie
+            //Delete Node from tree given a title of a movie
+            title = title.ToUpper();
 
             //If tree is empty
             if (root == null)
