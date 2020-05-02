@@ -13,21 +13,13 @@ namespace CAB301
 
         public Node Populate()
         {
-            Movie movie1 = new Movie("Movie 5", "The Rock", "No idea", 120, 2019,Genere.ACTION, Classification.MA15, 5 );
+            Movie movie1 = new Movie("Movie 5", "The Rock", "No idea", 120, 2019,Genere.ACTION, Classification.MA15, 1 );
             Movie movie2 = new Movie("Movie 4", "Daniel Radcliffe", "No idea", 60, 2019, Genere.ADVENTURE, Classification.PG, 0);
             Movie movie3 = new Movie("Movie 2", "RGJ", "No idea", 240, 2011, Genere.ACTION, Classification.PG, 6);
-            Movie movie4 = new Movie("Movie 1", "Chadwick Boseman", "Ryan Coogler", 60, 2014, Genere.SCI_FI, Classification.M15, 1);
-            Movie movie5 = new Movie("Movie 7", "Christan Bale", "No idea", 1000, 2017, Genere.ACTION, Classification.MA15, 6);
-            Movie movie6 = new Movie("Movie 6", "Chadwick Boseman", "Ryan Coogler", 60, 2019, Genere.SCI_FI, Classification.M15, 6);
-            Movie movie7 = new Movie("Movie 3", "Christan Bale", "No idea", 1000, 2011, Genere.ACTION, Classification.MA15, 3);
 
             root = tree.Insert_node(root, movie1);
             root = tree.Insert_node(root, movie2);
             root = tree.Insert_node(root, movie3);
-            root = tree.Insert_node(root, movie4);
-            root = tree.Insert_node(root, movie5);
-            root = tree.Insert_node(root, movie6);
-            root = tree.Insert_node(root, movie7);
 
 
             return root;
@@ -145,7 +137,7 @@ namespace CAB301
 
         public string Most_popular_call()
         {
-            //Everytime this is called a 10 ten list is  made from the tree. Reads in array using an in order read before sorting. uses min heap sort.
+            //Everytime this is called a top 10 ten list is made from the tree. Reads in array using an in order read before sorting. uses max heap sort.
             string output = "";
             string[] movies = Print_elements("TOP10").Split("\n", StringSplitOptions.RemoveEmptyEntries);
 

@@ -93,7 +93,7 @@ namespace CAB301
         private int Get_used_spaces()
         {
             //Returns the first empy position in array.
-            for(int i = 0; i < 9; i++)
+            for(int i = 0; i < 10; i++)
             {
                 if(ordered[i] == null)
                 {
@@ -108,7 +108,7 @@ namespace CAB301
         {
             //Check if movie already exists in list. returns true if it is in list.
 
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < 10; i++)
             {
                 if (ordered[i] != null)
                 {

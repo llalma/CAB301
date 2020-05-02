@@ -11,20 +11,10 @@ namespace CAB301
         public void Populate()
         {
             Address address1 = new Address(38, "Elma st", "Salisbury");
-            Member member1 = new Member("c", "a", address1, 0830947834, "0000");
+            Member member1 = new Member("Liam", "H", address1, 61830947834, "0000");
 
-            Member member2 = new Member("b", "d", address1, 9403758944, "9999");
-
-            Address address2 = new Address(135, "Duporth ave", "Maroochydore");
-            Member member3 = new Member("a", "a", address2, 1839347594, "0000");
-
-            Address address3 = new Address(56, "john st", "Whyalla");
-            Member member4 = new Member("b", "b", address3, 1739473954,"2222");
-
+           
             members.Add(member1);
-            members.Add(member2);
-            members.Add(member3);
-            members.Add(member4);
         }
 
         public void Add(Member member)

@@ -596,6 +596,10 @@ namespace CAB301
         private void Display_movies()
         {
             error = movies.Print_elements("All");
+            if(error == "")
+            {
+                error = "No movies in the library";
+            }
             screen = Screens.Member_menu;
         }
 
@@ -636,9 +640,12 @@ namespace CAB301
 
             //Return movie
             error = members.Return(logged_in, movie);
-            movies.Change_num_copies(title.ToUpper(), 1);
 
-
+            if (error.Contains(movie.Title))
+            {
+                movies.Change_num_copies(title.ToUpper(), 1);
+            }
+           
             //Return to member menu.
             screen = Screens.Member_menu;
         }
