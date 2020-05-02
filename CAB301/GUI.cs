@@ -670,8 +670,8 @@ namespace CAB301
 
         private void Most_popular()
         {
-            error = movies.Most_popular_list();
-            /*error = movies.Most_popular_call();*/
+            //error = movies.Most_popular_list();
+            error = movies.Most_popular_call();
 
             screen = Screens.Member_menu;
         }

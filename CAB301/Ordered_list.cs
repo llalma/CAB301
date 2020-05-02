@@ -46,7 +46,7 @@ namespace CAB301
 
         private void Sort()
         {
-            //Sorts by alphabetical order, sorts by username, uses inserstion sort. Is better for almost sorted arrays.
+            //Sorts by number of time rented, uses inserstion sort. Is better for almost sorted arrays.
             for (int i = 1; i < Get_used_spaces(); ++i)
             {
                 Movie movie = ordered[i];

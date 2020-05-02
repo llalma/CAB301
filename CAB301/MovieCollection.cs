@@ -14,12 +14,16 @@ namespace CAB301
         public Node Populate()
         {
             Movie movie1 = new Movie("Movie 5", "The Rock", "No idea", 120, 2019,Genere.ACTION, Classification.MA15, 1 );
-            Movie movie2 = new Movie("Movie 4", "Daniel Radcliffe", "No idea", 60, 2019, Genere.ADVENTURE, Classification.PG, 0);
+            Movie movie2 = new Movie("Movie 4", "Daniel Radcliffe", "No idea", 60, 2019, Genere.ADVENTURE, Classification.PG, 5);
             Movie movie3 = new Movie("Movie 2", "RGJ", "No idea", 240, 2011, Genere.ACTION, Classification.PG, 6);
+            Movie movie4 = new Movie("Movie 1", "Daniel Radcliffe", "No idea", 60, 2019, Genere.ADVENTURE, Classification.PG, 5);
+            Movie movie5 = new Movie("Movie 3", "RGJ", "No idea", 240, 2011, Genere.ACTION, Classification.PG, 6);
 
             root = tree.Insert_node(root, movie1);
             root = tree.Insert_node(root, movie2);
             root = tree.Insert_node(root, movie3);
+            root = tree.Insert_node(root, movie4);
+            root = tree.Insert_node(root, movie5);
 
 
             return root;
@@ -141,7 +145,7 @@ namespace CAB301
             string output = "";
             string[] movies = Print_elements("TOP10").Split("\n", StringSplitOptions.RemoveEmptyEntries);
 
-            for (int i = (movies.Length-1)/2-1; i >= 0; i--)
+            for (int i = (movies.Length-1); i >= 2; i--)
             {
                 heapify(movies, movies.Length, i);
             }
