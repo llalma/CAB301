@@ -670,6 +670,8 @@ namespace CAB301
 
         private void Most_popular()
         {
+            //Can switch comments for the 2 lines below to switch between the method which calls a function to sort and the list method.
+            //Currently the call method is being used.
             //error = movies.Most_popular_list();
             error = movies.Most_popular_call();
 
